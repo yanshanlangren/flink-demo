@@ -8,23 +8,28 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
-public class SocketTextStreamWordCount {
+public class DemoStreamWordCount {
+
     public static void main(String[] args) throws Exception {
-        String hostName = "0.0.0.0";
+        String hostName = "127.0.0.1";
         int port = 9000;
         // 设置运行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         // 获取数据源
         DataStreamSource<String> stream = env.socketTextStream(hostName, port);
         // 计数
-        SingleOutputStreamOperator<Tuple2<String, Integer>> sum = stream.flatMap((new LineSplitter())).keyBy(0).sum(1);
+        SingleOutputStreamOperator<Tuple2<String, Integer>> sum = stream
+                .flatMap((new LineSplitter()))
+                .keyBy(0)
+                .sum(1);
         // 输出
         sum.print();
         // 提交任务
-        env.execute("Java Word from SocketTextStream Example");
+        env.execute("Hello World");
     }
 
     public static final class LineSplitter implements FlatMapFunction<String, Tuple2<String, Integer>> {
+
         @Override
         public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
             String[] tokens = s.toLowerCase().split("\\W+");
