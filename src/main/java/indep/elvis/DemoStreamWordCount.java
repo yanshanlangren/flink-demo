@@ -2,6 +2,7 @@ package indep.elvis;
 
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -11,10 +12,12 @@ import org.apache.flink.util.Collector;
 public class DemoStreamWordCount {
 
     public static void main(String[] args) throws Exception {
-        String hostName = "127.0.0.1";
-        int port = 9000;
+        String hostName = "192.168.0.5";
+        int port = 40000;
         // 设置运行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        // 根据需要设置
+        env.setRestartStrategy(RestartStrategies.noRestart());
         // 获取数据源
         DataStreamSource<String> stream = env.socketTextStream(hostName, port);
         // 计数
